@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 
 import com.ls.realm.R;
 import com.ls.realm.model.db.RealmManager;
@@ -12,24 +14,54 @@ import com.ls.realm.model.db.data.User;
 import com.ls.realm.model.db.utils.DataGenerator;
 import com.ls.realm.ui.adapter.RealmAdapter;
 
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class HomeActivity extends AppCompatActivity {
-
+    Button btnAdd, btnDeleteAll, btnGetAll, btnGenerateData;
     private RealmAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_home);
+        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnDeleteAll = (Button) findViewById(R.id.btnDeleteAll);
+        btnGetAll = (Button) findViewById(R.id.btnGetAll);
+        btnGenerateData = (Button) findViewById(R.id.btnGenerateData);
         RealmManager.open();
-
         initViews();
-        saveUserList();
-        loadUserListAsync();
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                User user =DataGenerator.generateUser();
+                user.setAge(Calendar.getInstance().getTimeInMillis());
+                RealmManager.createUserDao().save(user);
+
+            }
+        });
+        btnGetAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadUserListAsync();
+            }
+        });
+        btnDeleteAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RealmManager.clear();
+            }
+        });
+        btnGenerateData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveUserList();
+            }
+        });
+
     }
 
     @Override
@@ -64,9 +96,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void updateRecyclerView(List<User> userList) {
-        if (mAdapter != null && userList != null) {
-            mAdapter.setData(userList);
-            mAdapter.notifyDataSetChanged();
-        }
+        mAdapter.setData(userList);
+        mAdapter.notifyDataSetChanged();
+
     }
 }
