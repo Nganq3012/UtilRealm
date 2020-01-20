@@ -15,7 +15,7 @@ public class User extends RealmObject implements IViewType {
     private String firstName;
     private String lastName;
     private String email;
-    private int age;
+    private long age;
 
     private RealmList<RealmString> contactList;
 
@@ -47,11 +47,11 @@ public class User extends RealmObject implements IViewType {
         this.lastName = lastName;
     }
 
-    public int getAge() {
+    public long getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(long age) {
         this.age = age;
     }
 
